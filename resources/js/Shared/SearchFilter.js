@@ -87,6 +87,7 @@ export default () => {
             </SelectInput>
           </div>
         </div>
+        {!filters.hasOwnProperty('hideOption') && (
         <button
           onClick={() => setOpened(true)}
           className="px-4 border-r rounded-l md:px-6 hover:bg-gray-100 focus:outline-none focus:border-white focus:ring-2 focus:ring-indigo-400 focus:z-10"
@@ -102,6 +103,7 @@ export default () => {
             </svg>
           </div>
         </button>
+        )}
         <input
           className="relative w-full px-6 py-3 rounded-r focus:outline-none focus:ring-2 focus:ring-indigo-400"
           autoComplete="off"
