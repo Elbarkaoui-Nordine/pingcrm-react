@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Mail;
+use App\Mail\ResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use League\Glide\Server;
 use Illuminate\Support\Facades\App;
@@ -9,14 +11,18 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract; 
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Http\UploadedFile;
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract
+class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use SoftDeletes, Authenticatable, Authorizable, HasFactory;
+    use Notifiable, SoftDeletes, Authenticatable, Authorizable, HasFactory, CanResetPassword;
 
     protected $casts = [
         'owner' => 'boolean',
@@ -92,5 +98,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
                 $query->onlyTrashed();
             }
         });
+    }
+    
+    public function sendPasswordResetNotification($token)
+    {
+        Mail::to($this->email)->send(new ResetPassword());
     }
 }
