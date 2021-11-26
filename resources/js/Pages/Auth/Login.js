@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Helmet from 'react-helmet';
 import { Inertia } from '@inertiajs/inertia';
-import { useForm } from '@inertiajs/inertia-react';
+import { InertiaLink, useForm, usePage } from '@inertiajs/inertia-react';
 import Logo from '@/Shared/Logo';
 import LoadingButton from '@/Shared/LoadingButton';
 import TextInput from '@/Shared/TextInput';
@@ -13,10 +13,22 @@ export default () => {
     remember: true
   });
 
+  const { flash } = usePage().props;
+  
   function handleSubmit(e) {
     e.preventDefault();
     post(route('login.attempt'));
   }
+
+  const IconSuccess = () => (
+    <svg
+      className="ml-4 mr-2 flex-shrink-0 w-4 h-4 text-white fill-current"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+    >
+      <polygon points="0 11 2 9 7 14 18 3 20 5 7 18" />
+    </svg>
+  );
 
   return (
     <div className="flex items-center justify-center min-h-screen p-6 bg-indigo-900">
@@ -31,6 +43,16 @@ export default () => {
           className="mt-8 overflow-hidden bg-white rounded-lg shadow-xl"
         >
           <div className="px-10 py-12">
+            {flash.success && (
+              <div className="mb-8 flex items-center justify-between bg-green-500 rounded max-w-3xl">
+                <div className="flex items-center">
+                  <IconSuccess />
+                  <div className="py-4 text-white text-sm font-medium">
+                    {flash.success}
+                  </div>
+                </div>
+              </div>
+            )}
             <h1 className="text-3xl font-bold text-center">Welcome Back!</h1>
             <div className="w-24 mx-auto mt-6 border-b-2" />
             <TextInput
@@ -67,9 +89,13 @@ export default () => {
             </label>
           </div>
           <div className="flex items-center justify-between px-10 py-4 bg-gray-100 border-t border-gray-200">
-            <a className="hover:underline" tabIndex="-1" href="#reset-password">
-              Forgot password?
-            </a>
+            <InertiaLink
+              className="hover:underline"
+              href={route('password.request')}
+            >
+              <span>Forgot password?</span>
+            </InertiaLink>
+            
             <LoadingButton
               type="submit"
               loading={processing}
