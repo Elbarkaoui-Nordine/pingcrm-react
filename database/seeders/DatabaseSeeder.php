@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Report;
 use App\Models\Account;
 use App\Models\Contact;
 use App\Models\Organization;
@@ -36,5 +37,7 @@ class DatabaseSeeder extends Seeder
             ->each(function (Contact  $contact) use ($organizations) {
                 $contact->update(['organization_id' => $organizations->random()->id]);
             });
+
+        Report::factory()->count(30)->create();
     }
 }
